@@ -67,7 +67,7 @@ void setup(){
   attenuateur[i].addInput(sound[i]);
   ac.out.addInput(attenuateur[i]);
   
-  rate[i] = new Glide(ac, 0.0, 100);
+  rate[i] = new Glide(ac, 0.0, 50);
   sound[i].start();
   }
 
@@ -84,20 +84,16 @@ void draw() {
     if(i==bandSel){gain[i].setValue(1.0);
     rate[i].setValue(vit*0.002);
     sound[i].setRate(rate[i]);   
-   }else{gain[i].setValue(0.5);
+   }else{gain[i].setValue(0.6);
        rate[i].setValue(vitTable[i][point]*0.002);
        sound[i].setRate(rate[i]);}
-  }
-  
-  if (GPIO.digitalRead(2)==0){
-  }else{
   }
   
   vitTable[bandSel][point] = vit;
   
   for (int i=0; i<9 ; i++){
   image(img[i],i*width*0.1,-cursor[i]+height*0.5,width*0.1,img[i].height*4);
-  cursor[i] = cursor[i] + int(vitTable[i][point]*0.08);  
+  cursor[i] = cursor[i] + int(vitTable[i][point]*0.045);  
 }
   
   noFill();
@@ -108,9 +104,14 @@ void draw() {
   line(0,height*0.5,width*0.9,height*0.5);
   
   stroke(0,255,255);
+  line(width*0.95,float(point)*height*0.5/180,width*0.95,(2-(float(point)/180))*height*0.5);
   
-  line(width*0.95,((float(point)/90)-1)*height,width*0.95,(float(point)/90)*height);
-  
+  if(point==0){
+     for(int i=0;i<bandNumber;i++){
+     sound[i].setPosition(000);
+     cursor[i]=0;
+     }
+   }
 }
   
 void serialEvent(Serial p) {
@@ -126,5 +127,4 @@ void pinEvent(int pin){
     vitTable[bandSel][i] = 0;
   }
   delay(200);
- 
 }
